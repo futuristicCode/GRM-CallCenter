@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grm-config
+  namespace: grm
+  labels:
+    app.kubernetes.io/name: grm
+    app.kubernetes.io/component: app
+data:
+  APP_NAME: "GRM"
+  APP_ENV: "production"
+  APP_DEBUG: "false"
+  APP_URL: "https://your-domain.com"
+  APP_LOCALE: "fr"
+  APP_FALLBACK_LOCALE: "fr"
+  APP_FAKER_LOCALE: "fr_FR"
+  APP_MAINTENANCE_DRIVER: "file"
+  BCRYPT_ROUNDS: "12"
+  LOG_CHANNEL: "stack"
+  LOG_STACK: "single"
+  LOG_LEVEL: "warning"
+  DB_CONNECTION: "pgsql"
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  DB_DATABASE: "GRMdb"
+  DB_USERNAME: "devops"
+  REDIS_CLIENT: "phpredis"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  SESSION_DRIVER: "database"
+  SESSION_LIFETIME: "120"
+  SESSION_ENCRYPT: "false"
+  SESSION_PATH: "/"
+  SESSION_DOMAIN: "null"
+  BROADCAST_CONNECTION: "log"
+  FILESYSTEM_DISK: "local"
+  QUEUE_CONNECTION: "database"
+  CACHE_STORE: "database"
+  MAIL_MAILER: "log"
+  VITE_APP_NAME: "GRM"

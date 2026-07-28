@@ -1,0 +1,81 @@
+# =============================================================================
+# docker-compose.yml — Laravel App + Queue Worker
+# =============================================================================
+# Usage:
+#   docker compose up -d --build
+#   docker compose down
+#   docker compose logs -f app
+#
+# Dépend de docker-compose.db.yml (réseau grm-net externe).
+# Lancer d'abord: docker compose -f docker-compose.db.yml up -d
+
+services:
+
+  # ─── Laravel (nginx + php-fpm) ────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: grm-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    env_file: .env.docker
+    volumes:
+      - app-storage:/var/www/html/storage
+      - app-bootstrap:/var/www/html/bootstrap/cache
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 768m
+    networks:
+      - grm-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # ─── Queue Worker ─────────────────────────────────────────────────────────
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: grm-worker
+    restart: unless-stopped
+    command: ["php", "/var/www/html/artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
+    env_file: .env.docker
+    volumes:
+      - app-storage:/var/www/html/storage
+      - app-bootstrap:/var/www/html/bootstrap/cache
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512m
+    networks:
+      - grm-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ─── Volumes ────────────────────────────────────────────────────────────────
+volumes:
+  app-storage:
+    driver: local
+  app-bootstrap:
+    driver: local
+
+# ─── Network ────────────────────────────────────────────────────────────────
+networks:
+  grm-net:
+    external: true

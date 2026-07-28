@@ -1,0 +1,85 @@
+# =============================================================================
+# docker-compose.db.yml — PostgreSQL + Redis
+# =============================================================================
+# Usage:
+#   docker compose -f docker-compose.db.yml up -d
+#   docker compose -f docker-compose.db.yml down
+#   docker compose -f docker-compose.db.yml down -v  # ⚠️ supprime les données
+
+services:
+
+  # ─── PostgreSQL ────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: grm-postgres
+    restart: unless-stopped
+    env_file: .env.docker
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-GRMdb}
+      POSTGRES_USER: ${DB_USERNAME:-devops}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-devops}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-devops} -d ${DB_DATABASE:-GRMdb}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512m
+    networks:
+      - grm-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ─── Redis ─────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: grm-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 128mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 128m
+    networks:
+      - grm-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ─── Volumes ────────────────────────────────────────────────────────────────
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+
+# ─── Network ────────────────────────────────────────────────────────────────
+networks:
+  grm-net:
+    name: grm-net
+    driver: bridge

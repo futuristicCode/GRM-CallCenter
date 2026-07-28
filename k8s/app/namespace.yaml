@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grm
+  labels:
+    app.kubernetes.io/name: grm
+    app.kubernetes.io/part-of: grm
