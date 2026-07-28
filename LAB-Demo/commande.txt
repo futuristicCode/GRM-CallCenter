@@ -9,3 +9,7 @@ WORKER
 
 talosctl apply -f worker.yaml -n 192.168.80.210 -e 192.168.80.200 --insecure
 talosctl apply -f worker.yaml -n 192.168.80.211 -e 192.168.80.200 --insecure
+
+
+
+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
