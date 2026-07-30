@@ -15,7 +15,7 @@ class RoleMiddleware
         }
 
         if (!in_array(auth()->user()->role, $roles)) {
-            abort(403, 'Accès non autorisé.');
+            abort(403, __('Accès non autorisé.'));
         }
 
         return $next($request);

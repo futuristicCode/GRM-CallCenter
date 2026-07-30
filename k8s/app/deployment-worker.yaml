@@ -12,6 +12,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: grm
       app.kubernetes.io/component: worker
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   template:
     metadata:
       labels:
@@ -24,9 +29,16 @@ spec:
         fsGroup: 1000
       containers:
         - name: worker
-          image: grm-app:latest
+          image: dssi04/grm-app:latest
           imagePullPolicy: IfNotPresent
-          command: ["php", "/var/www/html/artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
+          command:
+            - php
+            - /var/www/html/artisan
+            - queue:work
+            - --sleep=3
+            - --tries=3
+            - --max-time=3600
+            - --queue=default
           envFrom:
             - configMapRef:
                 name: grm-config
@@ -35,7 +47,7 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 256Mi
+              memory: 128Mi
             limits:
               cpu: 500m
               memory: 512Mi
@@ -48,5 +60,6 @@ spec:
         - name: storage
           emptyDir: {}
         - name: bootstrap-cache
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
       terminationGracePeriodSeconds: 60

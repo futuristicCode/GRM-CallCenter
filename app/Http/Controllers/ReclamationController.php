@@ -65,7 +65,7 @@ class ReclamationController extends Controller
     public function create()
     {
         if (!in_array(auth()->user()->role, ['admin', 'gestionnaire'])) {
-            abort(403, 'Seuls les admins et gestionnaires peuvent créer des réclamations.');
+            abort(403, __('Seuls les admins et gestionnaires peuvent créer des réclamations.'));
         }
         $types = TypeReclamation::where('actif', true)->get();
         return view('reclamations.create', compact('types'));
@@ -74,7 +74,7 @@ class ReclamationController extends Controller
     public function store(Request $request)
     {
         if (!in_array(auth()->user()->role, ['admin', 'gestionnaire'])) {
-            abort(403, 'Seuls les admins et gestionnaires peuvent créer des réclamations.');
+            abort(403, __('Seuls les admins et gestionnaires peuvent créer des réclamations.'));
         }
 
         $validated = $request->validate([
@@ -109,13 +109,13 @@ class ReclamationController extends Controller
         }
 
         return redirect()->route('reclamations.show', $reclamation)
-            ->with('success', 'Réclamation créée avec succès. Référence: ' . $reclamation->reference);
+            ->with('success', __('Réclamation créée avec succès.') . ' ' . __('Référence') . ': ' . $reclamation->reference);
     }
 
     public function show(Reclamation $reclamation)
     {
         if (auth()->user()->role === 'agent' && $reclamation->assigne_a !== auth()->id()) {
-            abort(403, 'Accès non autorisé.');
+            abort(403, __('Accès non autorisé.'));
         }
 
         $reclamation->load(['client', 'type', 'sousType', 'assigne', 'historiqueStatuts.utilisateur', 'messages.expediteur', 'piecesJointes']);
@@ -128,7 +128,7 @@ class ReclamationController extends Controller
     public function edit(Reclamation $reclamation)
     {
         if (!in_array(auth()->user()->role, ['admin', 'gestionnaire'])) {
-            abort(403, 'Seuls les admins et gestionnaires peuvent modifier les réclamations.');
+            abort(403, __('Seuls les admins et gestionnaires peuvent modifier les réclamations.'));
         }
 
         $reclamation->load(['client', 'type', 'sousType']);
@@ -141,7 +141,7 @@ class ReclamationController extends Controller
     public function update(Request $request, Reclamation $reclamation)
     {
         if (!in_array(auth()->user()->role, ['admin', 'gestionnaire'])) {
-            abort(403, 'Seuls les admins et gestionnaires peuvent modifier les réclamations.');
+            abort(403, __('Seuls les admins et gestionnaires peuvent modifier les réclamations.'));
         }
 
         $validated = $request->validate([
@@ -177,27 +177,27 @@ class ReclamationController extends Controller
         ]);
 
         return redirect()->route('reclamations.show', $reclamation)
-            ->with('success', 'Réclamation mise à jour avec succès.');
+            ->with('success', __('Réclamation mise à jour avec succès.'));
     }
 
     public function destroy(Reclamation $reclamation)
     {
         if (!in_array(auth()->user()->role, ['admin', 'gestionnaire'])) {
-            abort(403, 'Seuls les admins et gestionnaires peuvent supprimer des réclamations.');
+            abort(403, __('Seuls les admins et gestionnaires peuvent supprimer des réclamations.'));
         }
 
         $reclamation->delete();
         return redirect()->route('reclamations.index')
-            ->with('success', 'Réclamation supprimée avec succès.');
+            ->with('success', __('Réclamation supprimée avec succès.'));
     }
 
     public function prendreEnCharge(Reclamation $reclamation, Request $request)
     {
         $this->service->assigner($reclamation, $request->user()->id, $request->user()->id);
-        $this->service->changerStatut($reclamation, 'en_cours', $request->user()->id, 'Prise en charge');
+        $this->service->changerStatut($reclamation, 'en_cours', $request->user()->id, __('Prise en charge'));
 
         return redirect()->route('reclamations.show', $reclamation)
-            ->with('success', 'Réclamation prise en charge.');
+            ->with('success', __('Réclamation prise en charge.'));
     }
 
     public function changerStatut(Request $request, Reclamation $reclamation)
@@ -220,17 +220,17 @@ class ReclamationController extends Controller
         );
 
         if (!$success) {
-            return back()->withErrors(['statut' => 'Transition de statut non autorisée.']);
+            return back()->withErrors(['statut' => __('Transition de statut non autorisée.')]);
         }
 
         return redirect()->route('reclamations.show', $reclamation)
-            ->with('success', 'Statut mis à jour avec succès.');
+            ->with('success', __('Statut mis à jour avec succès.'));
     }
 
     public function assigner(Request $request, Reclamation $reclamation)
     {
         if (!in_array($request->user()->role, ['admin', 'gestionnaire'])) {
-            abort(403, 'Seuls les admins et gestionnaires peuvent assigner des réclamations.');
+            abort(403, __('Seuls les admins et gestionnaires peuvent assigner des réclamations.'));
         }
 
         $validated = $request->validate([
@@ -240,7 +240,7 @@ class ReclamationController extends Controller
         $this->service->assigner($reclamation, $request->user()->id, $validated['assigne_a']);
 
         return redirect()->route('reclamations.show', $reclamation)
-            ->with('success', 'Réclamation réassignée avec succès.');
+            ->with('success', __('Réclamation réassignée avec succès.'));
     }
 
     public function sousTypes(Request $request)

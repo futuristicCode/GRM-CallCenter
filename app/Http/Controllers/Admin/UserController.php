@@ -55,7 +55,7 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Utilisateur créé avec succès.');
+            ->with('success', __('Utilisateur créé avec succès.'));
     }
 
     public function edit(User $user)
@@ -82,35 +82,35 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Utilisateur mis à jour avec succès.');
+            ->with('success', __('Utilisateur mis à jour avec succès.'));
     }
 
     public function resetPassword(User $user)
     {
         $user->update(['password' => Hash::make('password')]);
-        return back()->with('success', 'Mot de passe réinitialisé pour ' . $user->email);
+        return back()->with('success', __('Mot de passe réinitialisé pour') . ' ' . $user->email);
     }
 
     public function toggleActive(User $user)
     {
         if ($user->id === auth()->id()) {
-            return back()->withErrors(['error' => 'Vous ne pouvez pas désactiver votre propre compte.']);
+            return back()->withErrors(['error' => __('Vous ne pouvez pas désactiver votre propre compte.')]);
         }
 
         $user->update(['is_active' => !$user->is_active]);
 
-        $statut = $user->is_active ? 'activé' : 'désactivé';
-        return back()->with('success', "Compte de {$user->name} {$statut} avec succès.");
+        $statut = $user->is_active ? __('activé') : __('désactivé');
+        return back()->with('success', __('Compte de') . " {$user->name} {$statut} " . __('avec succès.'));
     }
 
     public function destroy(User $user)
     {
         if (auth()->user()->role !== 'admin') {
-            abort(403, 'Seuls les administrateurs peuvent supprimer des comptes.');
+            abort(403, __('Seuls les administrateurs peuvent supprimer des comptes.'));
         }
 
         if ($user->id === auth()->id()) {
-            return back()->withErrors(['error' => 'Vous ne pouvez pas supprimer votre propre compte.']);
+            return back()->withErrors(['error' => __('Vous ne pouvez pas supprimer votre propre compte.')]);
         }
 
         \App\Models\Message::where('expediteur_id', $user->id)->delete();
@@ -120,6 +120,6 @@ class UserController extends Controller
 
         $user->delete();
         return redirect()->route('admin.users.index')
-            ->with('success', 'Utilisateur supprimé avec succès.');
+            ->with('success', __('Utilisateur supprimé avec succès.'));
     }
 }

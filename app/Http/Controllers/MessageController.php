@@ -32,8 +32,8 @@ class MessageController extends Controller
         if (!$estInterne && $reclamation->assigne_a && $reclamation->assigne_a !== $request->user()->id) {
             $this->service->creerNotification(
                 $reclamation->assigne_a,
-                'Nouveau message',
-                "Un nouveau message a été ajouté sur la réclamation {$reclamation->reference} par {$request->user()->name}.",
+                __('Nouveau message'),
+                __("Un nouveau message a été ajouté sur la réclamation") . " {$reclamation->reference} " . __('par') . " {$request->user()->name}.",
                 'message',
                 $reclamation->id
             );
@@ -42,13 +42,13 @@ class MessageController extends Controller
         if (!$estInterne && $reclamation->client) {
             $this->service->creerNotification(
                 $request->user()->id,
-                'Message envoyé',
-                "Votre message sur la réclamation {$reclamation->reference} a été envoyé.",
+                __('Message envoyé'),
+                __("Votre message sur la réclamation") . " {$reclamation->reference} " . __("a été envoyé."),
                 'message',
                 $reclamation->id
             );
         }
 
-        return back()->with('success', 'Message envoyé.');
+        return back()->with('success', __('Message envoyé.'));
     }
 }

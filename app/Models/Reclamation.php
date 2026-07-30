@@ -108,6 +108,19 @@ class Reclamation extends Model
         return $query->where('statut', 'attente_client');
     }
 
+    public function getStatutLabelAttribute(): string
+    {
+        return match($this->statut) {
+            'en_attente' => __('En attente'),
+            'en_cours' => __('En cours'),
+            'resolu' => __('Résolu'),
+            'rejete' => __('Rejeté'),
+            'attente_client' => __('Attente client'),
+            'archive' => __('Archivé'),
+            default => $this->statut,
+        };
+    }
+
     public static function genererReference(): string
     {
         $year = date('Y');

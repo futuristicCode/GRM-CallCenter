@@ -24,12 +24,15 @@ spec:
         app.kubernetes.io/component: web
     spec:
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      # ── Pour registry privée, décommenter et créer le secret :
+      # imagePullSecrets:
+      #   - name: ${IMAGE_PULL_SECRET}
       containers:
         - name: app
-          image: grm-app:latest
+          image: dssi04/grm-app:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -47,6 +50,9 @@ spec:
             limits:
               cpu: 1000m
               memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
           livenessProbe:
             httpGet:
               path: /up
@@ -75,9 +81,28 @@ spec:
               mountPath: /var/www/html/storage
             - name: bootstrap-cache
               mountPath: /var/www/html/bootstrap/cache
+            - name: tmp
+              mountPath: /tmp
       volumes:
         - name: storage
           emptyDir: {}
         - name: bootstrap-cache
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
+        - name: tmp
+          emptyDir:
+            medium: Memory
+
       terminationGracePeriodSeconds: 30
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - web
+                topologyKey: kubernetes.io/hostname

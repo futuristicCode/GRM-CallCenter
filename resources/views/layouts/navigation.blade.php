@@ -13,24 +13,24 @@
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        Tableau de bord
+                        {{ __('Tableau de bord') }}
                     </x-nav-link>
                     <x-nav-link :href="route('reclamations.index')" :active="request()->routeIs('reclamations.*')">
-                        Réclamations
+                        {{ __('Réclamations') }}
                     </x-nav-link>
                     @if(auth()->user()->role === 'admin')
                         <div class="relative" x-data="{ adminOpen: false }">
                             <button @click="adminOpen = !adminOpen" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none">
-                                Administration
+                                {{ __('Administration') }}
                                 <svg class="ms-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                 </svg>
                             </button>
                             <div x-show="adminOpen" @click.away="adminOpen = false" x-transition
                                  class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 py-1">
-                                <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Utilisateurs</a>
-                                <a href="{{ route('admin.types.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Types de réclamation</a>
-                                <a href="{{ route('admin.audit-logs.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Journal d'audit</a>
+                                <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Utilisateurs') }}</a>
+                                <a href="{{ route('admin.types.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Types de réclamation') }}</a>
+                                <a href="{{ route('admin.audit-logs.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Journal d\'audit') }}</a>
                             </div>
                         </div>
                     @endif
@@ -49,13 +49,13 @@
                     <div x-show="notifOpen" @click.away="notifOpen = false" x-transition
                          class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg z-50 py-2 max-h-96 overflow-y-auto">
                         <div class="px-4 py-2 border-b flex justify-between items-center">
-                            <span class="font-semibold text-sm">Notifications</span>
+                            <span class="font-semibold text-sm">{{ __('Notifications') }}</span>
                             <form method="POST" action="{{ route('notifications.mark-all-read') }}" class="inline">
                                 @csrf
-                                <button class="text-xs text-blue-600 hover:underline">Tout lire</button>
+                                <button class="text-xs text-blue-600 hover:underline">{{ __('Tout lire') }}</button>
                             </form>
                         </div>
-                        <a href="{{ route('notifications.index') }}" class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-50">Voir toutes les notifications</a>
+                        <a href="{{ route('notifications.index') }}" class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-50">{{ __('Voir toutes les notifications') }}</a>
                     </div>
                 </div>
 
@@ -74,13 +74,13 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            Mon profil
+                            {{ __('Mon profil') }}
                         </x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault(); this.closest('form').submit();">
-                                Se déconnecter
+                                {{ __('Se déconnecter') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -101,15 +101,15 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                Tableau de bord
+                {{ __('Tableau de bord') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('reclamations.index')" :active="request()->routeIs('reclamations.*')">
-                Réclamations
+                {{ __('Réclamations') }}
             </x-responsive-nav-link>
             @if(auth()->user()->role === 'admin')
-                <x-responsive-nav-link :href="route('admin.users.index')">Utilisateurs</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.types.index')">Types de réclamation</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.audit-logs.index')">Journal d'audit</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.users.index')">{{ __('Utilisateurs') }}</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.types.index')">{{ __('Types de réclamation') }}</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.audit-logs.index')">{{ __('Journal d\'audit') }}</x-responsive-nav-link>
             @endif
         </div>
         <div class="pt-4 pb-1 border-t border-gray-200">
@@ -118,11 +118,11 @@
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">Mon profil</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('profile.edit')">{{ __('Mon profil') }}</x-responsive-nav-link>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                        Se déconnecter
+                        {{ __('Se déconnecter') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

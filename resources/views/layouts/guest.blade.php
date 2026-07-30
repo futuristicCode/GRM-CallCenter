@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'GRM') }} – @yield('title', 'Connexion')</title>
+    <title>{{ config('app.name', 'GRM') }} – @yield('title', __('Connexion'))</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet" />
+    @if(app()->getLocale() === 'ar')
+        <link href="https://fonts.bunny.net/css?family=tajawal:300,400,500,700,800&display=swap" rel="stylesheet" />
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full">
+    @php($rtl = app()->getLocale() === 'ar')
     <div class="min-h-full flex">
         {{-- Left panel: branding --}}
         <div class="hidden lg:flex lg:flex-1 relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800">
@@ -23,7 +27,7 @@
                         </svg>
                     </div>
                     <h1 class="text-4xl font-extrabold text-white leading-tight tracking-tight">GRM</h1>
-                    <p class="text-lg text-indigo-100 mt-2 font-medium">Gestion des Réclamations<br>et des Mécontentements</p>
+                    <p class="text-lg text-indigo-100 mt-2 font-medium">{{ __('Gestion des Réclamations') }}<br>{{ __('et des Mécontentements') }}</p>
                 </div>
 
                 <div class="space-y-6">
@@ -34,8 +38,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-white font-semibold text-sm">Traitement rapide</h3>
-                            <p class="text-indigo-200 text-sm mt-0.5">Suivez et résolvez les réclamations en temps réel</p>
+                            <h3 class="text-white font-semibold text-sm">{{ __('Traitement rapide') }}</h3>
+                            <p class="text-indigo-200 text-sm mt-0.5">{{ __('Suivez et résolvez les réclamations en temps réel') }}</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">
@@ -45,8 +49,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-white font-semibold text-sm">Tableau de bord</h3>
-                            <p class="text-indigo-200 text-sm mt-0.5">Indicateurs et graphiques pour piloter la performance</p>
+                            <h3 class="text-white font-semibold text-sm">{{ __('Tableau de bord') }}</h3>
+                            <p class="text-indigo-200 text-sm mt-0.5">{{ __('Indicateurs et graphiques pour piloter la performance') }}</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">
@@ -56,14 +60,14 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-white font-semibold text-sm">Sécurisé</h3>
-                            <p class="text-indigo-200 text-sm mt-0.5">Gestion des rôles et traçabilité complète</p>
+                            <h3 class="text-white font-semibold text-sm">{{ __('Sécurisé') }}</h3>
+                            <p class="text-indigo-200 text-sm mt-0.5">{{ __('Gestion des rôles et traçabilité complète') }}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-auto pt-16">
-                    <p class="text-indigo-300 text-xs">&copy; {{ date('Y') }} GRM &mdash; Tous droits réservés</p>
+                    <p class="text-indigo-300 text-xs">&copy; {{ date('Y') }} GRM &mdash; {{ __('Tous droits réservés') }}</p>
                 </div>
             </div>
         </div>
@@ -82,8 +86,8 @@
 
             <div class="w-full max-w-sm">
                 <div class="mb-8">
-                    <h2 class="text-2xl font-bold text-gray-900">@yield('title', 'Connexion')</h2>
-                    <p class="text-sm text-gray-500 mt-1.5">@yield('subtitle', 'Connectez-vous à votre espace de travail')</p>
+                    <h2 class="text-2xl font-bold text-gray-900">@yield('title', __('Connexion'))</h2>
+                    <p class="text-sm text-gray-500 mt-1.5">@yield('subtitle', __('Connectez-vous à votre espace de travail'))</p>
                 </div>
 
                 {{-- Flash messages --}}
@@ -109,24 +113,24 @@
                     @csrf
 
                     <div>
-                        <label for="email" class="label">Adresse email</label>
+                        <label for="email" class="label">{{ __('Adresse email') }}</label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 {{ $rtl ? 'right-0 pr-3.5' : 'left-0 pl-3.5' }} flex items-center pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
                             </div>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
-                                   class="input pl-11" placeholder="vous@exemple.com">
+                                   class="input {{ $rtl ? 'pr-11' : 'pl-11' }}" placeholder="{{ __('vous@exemple.com') }}">
                         </div>
                     </div>
 
                     <div>
-                        <label for="password" class="label">Mot de passe</label>
+                        <label for="password" class="label">{{ __('Mot de passe') }}</label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 {{ $rtl ? 'right-0 pr-3.5' : 'left-0 pl-3.5' }} flex items-center pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
                             </div>
                             <input id="password" type="password" name="password" required autocomplete="current-password"
-                                   class="input pl-11" placeholder="••••••••">
+                                   class="input {{ $rtl ? 'pr-11' : 'pl-11' }}" placeholder="••••••••">
                         </div>
                     </div>
 
@@ -134,28 +138,47 @@
                         <label for="remember_me" class="inline-flex items-center gap-2 cursor-pointer">
                             <input id="remember_me" type="checkbox" name="remember"
                                    class="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition">
-                            <span class="text-sm text-gray-500">Se souvenir de moi</span>
+                            <span class="text-sm text-gray-500">{{ __('Se souvenir de moi') }}</span>
                         </label>
 
                         @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-                                Mot de passe oublié ?
+                                {{ __('Mot de passe oublié ?') }}
                             </a>
                         @endif
                     </div>
 
                     <button type="submit" class="btn-primary w-full py-3 text-sm">
-                        Se connecter
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                        {{ __('Se connecter') }}
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" {{ $rtl ? 'style="transform:scaleX(-1)"' : '' }}><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                     </button>
                 </form>
 
                 <div class="mt-8 pt-6 border-t border-gray-100">
                     <p class="text-xs text-gray-400 text-center">
-                        Comptes de démonstration<br>
+                        {{ __('Comptes de démonstration') }}<br>
                         <span class="font-mono text-gray-500">admin@grm.com</span> · <span class="font-mono text-gray-500">password</span>
                     </p>
                 </div>
+            </div>
+
+            {{-- Language switcher --}}
+            <div class="mt-6 flex justify-center gap-2">
+                <form method="POST" action="{{ route('locale.switch') }}">
+                    @csrf
+                    <input type="hidden" name="locale" value="fr">
+                    <button type="submit" class="px-3 py-1.5 text-xs rounded-lg {{ app()->getLocale() === 'fr' ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100' }}">🇫🇷 FR</button>
+                </form>
+                <form method="POST" action="{{ route('locale.switch') }}">
+                    @csrf
+                    <input type="hidden" name="locale" value="en">
+                    <button type="submit" class="px-3 py-1.5 text-xs rounded-lg {{ app()->getLocale() === 'en' ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100' }}">🇬🇧 EN</button>
+                </form>
+                <form method="POST" action="{{ route('locale.switch') }}">
+                    @csrf
+                    <input type="hidden" name="locale" value="ar">
+                    <button type="submit" class="px-3 py-1.5 text-xs rounded-lg {{ app()->getLocale() === 'ar' ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100' }}">🇸🇦 AR</button>
+                </form>
             </div>
         </div>
     </div>

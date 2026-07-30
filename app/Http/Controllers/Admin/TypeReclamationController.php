@@ -26,7 +26,7 @@ class TypeReclamationController extends Controller
         TypeReclamation::create($validated);
 
         return redirect()->route('admin.types.index')
-            ->with('success', 'Type de réclamation créé avec succès.');
+            ->with('success', __('Type de réclamation créé avec succès.'));
     }
 
     public function update(Request $request, TypeReclamation $type)
@@ -40,14 +40,14 @@ class TypeReclamationController extends Controller
         $type->update($validated);
 
         return redirect()->route('admin.types.index')
-            ->with('success', 'Type mis à jour avec succès.');
+            ->with('success', __('Type mis à jour avec succès.'));
     }
 
     public function destroy(TypeReclamation $type)
     {
         $type->update(['actif' => false]);
         return redirect()->route('admin.types.index')
-            ->with('success', 'Type désactivé avec succès.');
+            ->with('success', __('Type désactivé avec succès.'));
     }
 
     public function storeSousType(Request $request)
@@ -60,13 +60,13 @@ class TypeReclamationController extends Controller
         SousType::create($validated);
 
         return redirect()->route('admin.types.index')
-            ->with('success', 'Sous-type créé avec succès.');
+            ->with('success', __('Sous-type créé avec succès.'));
     }
 
     public function destroySousType(SousType $sousType)
     {
         $sousType->update(['actif' => false]);
         return redirect()->route('admin.types.index')
-            ->with('success', 'Sous-type désactivé avec succès.');
+            ->with('success', __('Sous-type désactivé avec succès.'));
     }
 }

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grm-app-pvc
+  namespace: grm
+  labels:
+    app.kubernetes.io/name: grm
+    app.kubernetes.io/component: web
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  # storageClassName: nfs-client  # ← définit par votre provisionneur CSI
+  # Exemples :
+  #   - NFS : storageClassName: nfs-client
+  #   - EFS : storageClassName: efs-sc
+  #   - Longhorn : storageClassName: longhorn
+  #   - Local : storageClassName: standard (si ReadWriteOnce suffit)

@@ -62,15 +62,15 @@ class ReclamationService
                 'ancien_statut' => null,
                 'nouveau_statut' => 'en_attente',
                 'utilisateur_id' => $utilisateurId,
-                'commentaire' => 'Réclamation créée',
+                'commentaire' => __('Réclamation créée'),
                 'date_changement' => now(),
             ]);
 
             $this->logAudit($utilisateurId, 'creation', 'Reclamation', $reclamation->id, null, $reclamation->toArray());
 
             $this->notifierAdminsEtGestionnaires(
-                'Nouvelle réclamation',
-                "La réclamation {$reclamation->reference} a été créée : {$reclamation->sujet}",
+                __('Nouvelle réclamation'),
+                __('La réclamation') . " {$reclamation->reference} " . __('a été créée') . " : {$reclamation->sujet}",
                 'reclamation',
                 $reclamation->id
             );
@@ -112,14 +112,14 @@ class ReclamationService
 
             $this->logAudit($utilisateurId, 'changement_statut', 'Reclamation', $reclamation->id, $anciennesValeurs, $reclamation->toArray());
 
-            $labelAncien = self::STATUT_LABELS[$ancienStatut] ?? $ancienStatut;
-            $labelNouveau = self::STATUT_LABELS[$nouveauStatut] ?? $nouveauStatut;
+            $labelAncien = __(self::STATUT_LABELS[$ancienStatut] ?? $ancienStatut);
+            $labelNouveau = __(self::STATUT_LABELS[$nouveauStatut] ?? $nouveauStatut);
 
             if ($reclamation->assigne_a && $reclamation->assigne_a !== $utilisateurId) {
                 $this->creerNotification(
                     $reclamation->assigne_a,
-                    'Changement de statut',
-                    "La réclamation {$reclamation->reference} est passée de « {$labelAncien} » à « {$labelNouveau} ».",
+                    __('Changement de statut'),
+                    __('La réclamation') . " {$reclamation->reference} " . __('est passée de') . " « {$labelAncien} » " . __('à') . " « {$labelNouveau} ».",
                     'reclamation',
                     $reclamation->id
                 );
@@ -128,8 +128,8 @@ class ReclamationService
             if ($nouveauStatut === 'attente_client' && $reclamation->client) {
                 $this->creerNotification(
                     $utilisateurId,
-                    'Information requise',
-                    "La réclamation {$reclamation->reference} nécessite des informations complémentaires.",
+                    __('Information requise'),
+                    __('La réclamation') . " {$reclamation->reference} " . __('nécessite des informations complémentaires.'),
                     'reclamation',
                     $reclamation->id
                 );
@@ -150,7 +150,7 @@ class ReclamationService
             'ancien_statut' => $reclamation->statut,
             'nouveau_statut' => $reclamation->statut,
             'utilisateur_id' => $utilisateurId,
-            'commentaire' => 'Réclamation assignée',
+            'commentaire' => __('Réclamation assignée'),
             'date_changement' => now(),
         ]);
 
@@ -159,8 +159,8 @@ class ReclamationService
         if ($assigneA !== $utilisateurId) {
             $this->creerNotification(
                 $assigneA,
-                'Nouvelle assignation',
-                "Vous avez été assigné à la réclamation {$reclamation->reference} : {$reclamation->sujet}.",
+                __('Nouvelle assignation'),
+                __('Vous avez été assigné à la réclamation') . " {$reclamation->reference} : {$reclamation->sujet}.",
                 'reclamation',
                 $reclamation->id
             );

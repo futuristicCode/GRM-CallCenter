@@ -18,7 +18,7 @@ class Authenticate extends BaseAuthenticate
             $request->session()->regenerateToken();
 
             return redirect()->route('login')
-                ->withErrors(['email' => 'Votre compte a été désactivé. Contactez l\'administrateur.']);
+                ->withErrors(['email' => __('Votre compte a été désactivé. Contactez l\'administrateur.')]);
         }
 
         return $next($request);

@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Journal d\'audit')
+@section('title', __('Journal d\'audit'))
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Journal d'audit</h1>
-        <p class="text-sm text-gray-500 mt-1">Historique complet des actions du système</p>
+        <h1 class="text-2xl font-bold text-gray-900">{{ __('Journal d\'audit') }}</h1>
+        <p class="text-sm text-gray-500 mt-1">{{ __('Historique complet des actions du système') }}</p>
     </div>
 
     <div class="card mb-6">
@@ -14,34 +14,34 @@
             <form method="GET" action="{{ route('admin.audit-logs.index') }}">
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4 items-end">
                     <div>
-                        <label class="label">Action</label>
+                        <label class="label">{{ __('Action') }}</label>
                         <select name="action" class="select w-full">
-                            <option value="">Toutes</option>
+                            <option value="">{{ __('Toutes') }}</option>
                             @foreach($actions as $action)
                                 <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>{{ $action }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div>
-                        <label class="label">Modèle</label>
+                        <label class="label">{{ __('Modèle') }}</label>
                         <select name="modele" class="select w-full">
-                            <option value="">Tous</option>
+                            <option value="">{{ __('Tous') }}</option>
                             @foreach($modeles as $modele)
                                 <option value="{{ $modele }}" {{ request('modele') == $modele ? 'selected' : '' }}>{{ $modele }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div>
-                        <label class="label">Date début</label>
+                        <label class="label">{{ __('Date début') }}</label>
                         <input type="date" name="date_debut" value="{{ request('date_debut') }}" class="input w-full">
                     </div>
                     <div>
-                        <label class="label">Date fin</label>
+                        <label class="label">{{ __('Date fin') }}</label>
                         <input type="date" name="date_fin" value="{{ request('date_fin') }}" class="input w-full">
                     </div>
                     <div class="flex gap-2">
-                        <button type="submit" class="btn-primary btn-sm flex-1">Filtrer</button>
-                        <a href="{{ route('admin.audit-logs.index') }}" class="btn-secondary btn-sm">Réinitialiser</a>
+                        <button type="submit" class="btn-primary btn-sm flex-1">{{ __('Filtrer') }}</button>
+                        <a href="{{ route('admin.audit-logs.index') }}" class="btn-secondary btn-sm">{{ __('Réinitialiser') }}</a>
                     </div>
                 </div>
             </form>
@@ -54,8 +54,8 @@
                 <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
-                <h3 class="font-semibold text-gray-900">Entrées</h3>
-                <span class="badge-blue ml-auto">{{ $logs->total() }} entrée(s)</span>
+                <h3 class="font-semibold text-gray-900">{{ __('Entrées') }}</h3>
+                <span class="badge-blue ml-auto">{{ $logs->total() }} {{ __('entrée(s)') }}</span>
             </div>
         </div>
         <div class="table-container">
@@ -63,12 +63,12 @@
                 <thead>
                     <tr>
                         <th class="w-8"></th>
-                        <th>Date</th>
-                        <th>Utilisateur</th>
-                        <th>Action</th>
-                        <th>Modèle</th>
-                        <th>ID</th>
-                        <th>IP</th>
+                        <th>{{ __('Date') }}</th>
+                        <th>{{ __('Utilisateur') }}</th>
+                        <th>{{ __('Action') }}</th>
+                        <th>{{ __('Modèle') }}</th>
+                        <th>{{ __('ID') }}</th>
+                        <th>{{ __('IP') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -91,7 +91,7 @@
                                 @endif
                             </td>
                             <td class="whitespace-nowrap text-sm text-gray-600">{{ $log->created_at->format('d/m/Y H:i:s') }}</td>
-                            <td class="font-medium text-gray-900">{{ $log->utilisateur->name ?? 'Système' }}</td>
+                            <td class="font-medium text-gray-900">{{ $log->utilisateur->name ?? __('Système') }}</td>
                             <td><span class="{{ $aColors[$log->action] ?? 'badge-gray' }}">{{ $log->action }}</span></td>
                             <td class="text-sm text-gray-500">{{ $log->modele }}</td>
                             <td class="text-sm text-gray-500 font-mono">{{ $log->modele_id ?? '-' }}</td>
@@ -105,7 +105,7 @@
                                             <div>
                                                 <h4 class="text-xs font-semibold text-red-600 uppercase mb-2 flex items-center gap-1">
                                                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-                                                    Avant
+                                                    {{ __('Avant') }}
                                                 </h4>
                                                 <pre class="bg-red-50 border border-red-200 rounded-xl p-3 text-xs text-red-800 overflow-auto max-h-48 font-mono">{{ json_encode($log->ancien_valeurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                                             </div>
@@ -114,7 +114,7 @@
                                             <div>
                                                 <h4 class="text-xs font-semibold text-emerald-600 uppercase mb-2 flex items-center gap-1">
                                                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H4"/></svg>
-                                                    Après
+                                                    {{ __('Après') }}
                                                 </h4>
                                                 <pre class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-800 overflow-auto max-h-48 font-mono">{{ json_encode($log->nouveau_valeurs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                                             </div>
@@ -125,7 +125,7 @@
                         @endif
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-gray-400 py-8">Aucune entrée d'audit.</td>
+                            <td colspan="7" class="text-center text-gray-400 py-8">{{ __('Aucune entrée d\'audit.') }}</td>
                         </tr>
                     @endforelse
                 </tbody>

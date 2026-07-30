@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,13 +7,17 @@
     <title>{{ config('app.name', 'GRM') }} – @yield('title', 'Dashboard')</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet" />
+    @if(app()->getLocale() === 'ar')
+        <link href="https://fonts.bunny.net/css?family=tajawal:300,400,500,700,800&display=swap" rel="stylesheet" />
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full">
+    @php($rtl = app()->getLocale() === 'ar')
     <div class="min-h-full flex" x-data="{ sidebarOpen: true, mobileSidebar: false }">
         {{-- Desktop Sidebar --}}
-        <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-white border-r border-gray-200 z-30 transition-all duration-300"
-               :class="sidebarOpen ? 'lg:w-72' : 'lg:w-20'">
+        <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-white {{ $rtl ? 'border-l' : 'border-r' }} border-gray-200 z-30 transition-all duration-300"
+               :class="sidebarOpen ? 'lg:!w-72' : 'lg:!w-20'">
             {{-- Logo --}}
             <div class="flex items-center h-16 px-5 border-b border-gray-100 flex-shrink-0">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
@@ -33,7 +37,7 @@
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>
                     </svg>
-                    <span x-show="sidebarOpen" x-transition>Tableau de bord</span>
+                    <span x-show="sidebarOpen" x-transition>{{ __('Tableau de bord') }}</span>
                 </a>
 
                 <a href="{{ route('reclamations.index') }}"
@@ -41,12 +45,12 @@
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
                     </svg>
-                    <span x-show="sidebarOpen" x-transition>Réclamations</span>
+                    <span x-show="sidebarOpen" x-transition>{{ __('Réclamations') }}</span>
                 </a>
 
                 @if(auth()->user()->role === 'admin')
                     <div class="pt-4 pb-2" x-show="sidebarOpen">
-                        <p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">Administration</p>
+                        <p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Administration') }}</p>
                     </div>
 
                     <a href="{{ route('admin.users.index') }}"
@@ -54,7 +58,7 @@
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
                         </svg>
-                        <span x-show="sidebarOpen" x-transition>Utilisateurs</span>
+                        <span x-show="sidebarOpen" x-transition>{{ __('Utilisateurs') }}</span>
                     </a>
 
                     <a href="{{ route('admin.types.index') }}"
@@ -63,7 +67,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/>
                         </svg>
-                        <span x-show="sidebarOpen" x-transition>Types de réclamation</span>
+                        <span x-show="sidebarOpen" x-transition>{{ __('Types de réclamation') }}</span>
                     </a>
 
                     <a href="{{ route('admin.audit-logs.index') }}"
@@ -71,12 +75,32 @@
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span x-show="sidebarOpen" x-transition>Journal d'audit</span>
+                        <span x-show="sidebarOpen" x-transition>{{ __('Journal d\'audit') }}</span>
                     </a>
                 @endif
 
                 <div class="pt-4 pb-2" x-show="sidebarOpen">
-                    <p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">Autres</p>
+                    <p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Rapports') }}</p>
+                </div>
+
+                <a href="{{ route('reports.index') }}"
+                   class="sidebar-link {{ request()->routeIs('reports.*') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>
+                    </svg>
+                    <span x-show="sidebarOpen" x-transition>{{ __('Rapports') }}</span>
+                </a>
+
+                <a href="{{ route('reports.reclamations', ['format' => 'csv']) }}"
+                   class="sidebar-link {{ request()->routeIs('reports.reclamations') && request('format') === 'csv' ? 'sidebar-link-active' : 'sidebar-link-default' }}">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                    </svg>
+                    <span x-show="sidebarOpen" x-transition>{{ __('Export CSV') }}</span>
+                </a>
+
+                <div class="pt-4 pb-2" x-show="sidebarOpen">
+                    <p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Notifications') }}</p>
                 </div>
 
                 <a href="{{ route('notifications.index') }}"
@@ -84,26 +108,54 @@
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
                     </svg>
-                    <span x-show="sidebarOpen" x-transition>Notifications</span>
+                    <span x-show="sidebarOpen" x-transition>{{ __('Notifications') }}</span>
                 </a>
             </nav>
+
+            {{-- Language switcher --}}
+            <div class="border-t border-gray-100 px-3 py-3 flex-shrink-0">
+                <p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest mb-2" x-show="sidebarOpen">{{ __('Langue') }}</p>
+                <div class="flex gap-1" :class="sidebarOpen ? 'flex-row' : 'flex-col items-center'">
+                    <form method="POST" action="{{ route('locale.switch') }}">
+                        @csrf
+                        <input type="hidden" name="locale" value="fr">
+                        <button type="submit" class="sidebar-link w-full justify-center {{ app()->getLocale() === 'fr' ? 'sidebar-link-active' : 'sidebar-link-default' }}">
+                            <span class="text-sm">🇫🇷 <span x-show="sidebarOpen">FR</span></span>
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('locale.switch') }}">
+                        @csrf
+                        <input type="hidden" name="locale" value="en">
+                        <button type="submit" class="sidebar-link w-full justify-center {{ app()->getLocale() === 'en' ? 'sidebar-link-active' : 'sidebar-link-default' }}">
+                            <span class="text-sm">🇬🇧 <span x-show="sidebarOpen">EN</span></span>
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('locale.switch') }}">
+                        @csrf
+                        <input type="hidden" name="locale" value="ar">
+                        <button type="submit" class="sidebar-link w-full justify-center {{ app()->getLocale() === 'ar' ? 'sidebar-link-active' : 'sidebar-link-default' }}">
+                            <span class="text-sm">🇸🇦 <span x-show="sidebarOpen">AR</span></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
 
             {{-- Sidebar toggle --}}
             <div class="border-t border-gray-100 px-3 py-3 flex-shrink-0">
                 <button @click="sidebarOpen = !sidebarOpen" class="sidebar-link sidebar-link-default w-full">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform duration-300" :class="sidebarOpen ? '' : 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform duration-300" :class="sidebarOpen ? ({{ $rtl ? "'rotate-180'" : "''" }}) : ({{ $rtl ? "''" : "'rotate-180'" }})" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"/>
                     </svg>
-                    <span x-show="sidebarOpen" x-transition>Réduire</span>
+                    <span x-show="sidebarOpen" x-transition>{{ __('Réduire') }}</span>
                 </button>
             </div>
         </aside>
 
         {{-- Mobile sidebar overlay --}}
         <div x-show="mobileSidebar" x-transition.opacity class="fixed inset-0 bg-gray-900/50 z-40 lg:hidden" @click="mobileSidebar = false" x-cloak></div>
-        <aside x-show="mobileSidebar" x-transition:enter="transition-transform duration-300" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
-               x-transition:leave="transition-transform duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
-               class="fixed inset-y-0 left-0 w-72 bg-white border-r border-gray-200 z-50 lg:hidden flex flex-col" x-cloak>
+        <aside x-show="mobileSidebar" x-transition:enter="transition-transform duration-300" x-transition:enter-start="{{ $rtl ? 'translate-x-full' : '-translate-x-full' }}" x-transition:enter-end="translate-x-0"
+               x-transition:leave="transition-transform duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="{{ $rtl ? 'translate-x-full' : '-translate-x-full' }}"
+               class="fixed inset-y-0 {{ $rtl ? 'right-0' : 'left-0' }} w-72 bg-white {{ $rtl ? 'border-l' : 'border-r' }} border-gray-200 z-50 lg:hidden flex flex-col" x-cloak>
             <div class="flex items-center h-16 px-5 border-b border-gray-100">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
@@ -117,37 +169,67 @@
             <nav class="flex-1 overflow-y-auto sidebar-scroll px-3 py-4 space-y-1">
                 <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
-                    Tableau de bord
+                    {{ __('Tableau de bord') }}
                 </a>
                 <a href="{{ route('reclamations.index') }}" class="sidebar-link {{ request()->routeIs('reclamations.*') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
-                    Réclamations
+                    {{ __('Réclamations') }}
                 </a>
                 @if(auth()->user()->role === 'admin')
-                    <div class="pt-4 pb-2"><p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">Administration</p></div>
+                    <div class="pt-4 pb-2"><p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Administration') }}</p></div>
                     <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
-                        Utilisateurs
+                        {{ __('Utilisateurs') }}
                     </a>
                     <a href="{{ route('admin.types.index') }}" class="sidebar-link {{ request()->routeIs('admin.types.*') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>
-                        Types de réclamation
+                        {{ __('Types de réclamation') }}
                     </a>
                     <a href="{{ route('admin.audit-logs.index') }}" class="sidebar-link {{ request()->routeIs('admin.audit-logs.*') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Journal d'audit
+                        {{ __('Journal d\'audit') }}
                     </a>
                 @endif
-                <div class="pt-4 pb-2"><p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">Autres</p></div>
+                <div class="pt-4 pb-2"><p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Rapports') }}</p></div>
+                <a href="{{ route('reports.index') }}" class="sidebar-link {{ request()->routeIs('reports.index') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+                    {{ __('Rapports') }}
+                </a>
+                <a href="{{ route('reports.reclamations', ['format' => 'csv']) }}" class="sidebar-link {{ request()->routeIs('reports.reclamations') && request('format') === 'csv' ? 'sidebar-link-active' : 'sidebar-link-default' }}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                    {{ __('Export CSV') }}
+                </a>
+                <div class="pt-4 pb-2"><p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Autres') }}</p></div>
                 <a href="{{ route('notifications.index') }}" class="sidebar-link {{ request()->routeIs('notifications.*') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
-                    Notifications
+                    {{ __('Notifications') }}
                 </a>
             </nav>
+            <div class="border-t border-gray-100 px-5 py-4">
+                <p class="text-[10px] font-bold text-gray-300 uppercase tracking-widest mb-3">{{ __('Langue') }}</p>
+                <div class="flex gap-2">
+                    <form method="POST" action="{{ route('locale.switch') }}">
+                        @csrf
+                        <input type="hidden" name="locale" value="fr">
+                        <button type="submit" class="px-3 py-1.5 text-sm rounded-lg {{ app()->getLocale() === 'fr' ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-500 hover:bg-gray-100' }}">🇫🇷 FR</button>
+                    </form>
+                    <form method="POST" action="{{ route('locale.switch') }}">
+                        @csrf
+                        <input type="hidden" name="locale" value="en">
+                        <button type="submit" class="px-3 py-1.5 text-sm rounded-lg {{ app()->getLocale() === 'en' ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-500 hover:bg-gray-100' }}">🇬🇧 EN</button>
+                    </form>
+                    <form method="POST" action="{{ route('locale.switch') }}">
+                        @csrf
+                        <input type="hidden" name="locale" value="ar">
+                        <button type="submit" class="px-3 py-1.5 text-sm rounded-lg {{ app()->getLocale() === 'ar' ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-500 hover:bg-gray-100' }}">🇸🇦 AR</button>
+                    </form>
+                </div>
+            </div>
         </aside>
 
         {{-- Main content --}}
-        <div class="flex-1 lg:pl-72 transition-all duration-300" :class="sidebarOpen ? '' : 'lg:pl-20'">
+<div class="flex-1 {{ $rtl ? 'lg:pr-72' : 'lg:pl-72' }} transition-all duration-300"
+             :class="sidebarOpen ? '' : '{{ $rtl ? 'lg:!pr-20' : 'lg:!pl-20' }}'">
             {{-- Top bar --}}
             <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100">
                 <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -169,7 +251,7 @@
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
                             </svg>
-                            <span id="notif-badge" class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full ring-2 ring-white" style="display:none"></span>
+                            <span id="notif-badge" class="absolute -top-0.5 {{ $rtl ? '-left-0.5' : '-right-0.5' }} inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full ring-2 ring-white" style="display:none"></span>
                         </a>
 
                         {{-- User dropdown --}}
@@ -180,26 +262,26 @@
                                 </div>
                                 <div class="hidden sm:block text-left">
                                     <p class="text-sm font-semibold text-gray-900 leading-none">{{ auth()->user()->name }}</p>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">{{ ucfirst(auth()->user()->role) }}</p>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">{{ __(ucfirst(auth()->user()->role)) }}</p>
                                 </div>
                                 <svg class="w-4 h-4 text-gray-400 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                             <div x-show="open" @click.away="open = false" x-transition x-cloak
-                                 class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                                 class="absolute {{ $rtl ? 'left-0' : 'right-0' }} mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
                                 <div class="px-4 py-2 border-b border-gray-100">
                                     <p class="text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</p>
                                     <p class="text-xs text-gray-400">{{ auth()->user()->email }}</p>
                                 </div>
                                 <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-                                    Mon profil
+                                    {{ __('Mon profil') }}
                                 </a>
                                 <div class="border-t border-gray-100 mt-1 pt-1">
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit" class="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
-                                            Se déconnecter
+                                            {{ __('Se déconnecter') }}
                                         </button>
                                     </form>
                                 </div>

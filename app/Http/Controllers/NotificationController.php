@@ -30,7 +30,7 @@ class NotificationController extends Controller
             ->where('lu', false)
             ->update(['lu' => true]);
 
-        return back()->with('success', 'Toutes les notifications marquées comme lues.');
+        return back()->with('success', __('Toutes les notifications marquées comme lues.'));
     }
 
     public function unreadCount(Request $request)

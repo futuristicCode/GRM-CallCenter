@@ -4,15 +4,32 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReclamationController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TypeReclamationController;
 use App\Http\Controllers\Admin\AuditLogController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/up', function () {
+    return response()->json(['status' => 'ok']);
+})->name('healthcheck');
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+Route::post('/locale', function (\Illuminate\Http\Request $request) {
+    $locale = $request->input('locale', 'fr');
+    if (in_array($locale, ['fr', 'en', 'ar'])) {
+        session(['locale' => $locale]);
+        if (auth()->check()) {
+            auth()->user()->update(['locale' => $locale]);
+        }
+        app()->setLocale($locale);
+    }
+    return redirect()->back();
+})->name('locale.switch');
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])
@@ -42,6 +59,17 @@ Route::middleware(['auth'])->group(function () {
 
     // Messages
     Route::post('/reclamations/{reclamation}/messages', [MessageController::class, 'store'])->name('messages.store');
+
+    // Rapports
+    Route::get('/rapports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/rapports/reclamations', [ReportController::class, 'reclamations'])->name('reports.reclamations');
+    Route::get('/rapports/reclamations/{reclamation}', [ReportController::class, 'reclamation'])->name('reports.reclamation');
+    Route::get('/rapports/statistiques', [ReportController::class, 'statistiques'])->name('reports.statistiques');
+
+    // PDF exports
+    Route::get('/rapports/pdf/reclamations', [ReportController::class, 'exportPdfReclamations'])->name('reports.pdf.reclamations');
+    Route::get('/rapports/pdf/reclamation/{reclamation}', [ReportController::class, 'exportPdfReclamation'])->name('reports.pdf.reclamation');
+    Route::get('/rapports/pdf/statistiques', [ReportController::class, 'exportPdfStatistiques'])->name('reports.pdf.statistiques');
 
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');

@@ -1,81 +1,217 @@
 # =============================================================================
-# docker-compose.yml — Laravel App + Queue Worker
+# docker-compose.yml — GRM (Gestion des Réclamations)
 # =============================================================================
 # Usage:
-#   docker compose up -d --build
-#   docker compose down
-#   docker compose logs -f app
-#
-# Dépend de docker-compose.db.yml (réseau grm-net externe).
-# Lancer d'abord: docker compose -f docker-compose.db.yml up -d
+#   docker compose up -d                     # Démarrer tous les services
+#   docker compose up -d --build             # Reconstruire et démarrer
+#   docker compose --profile scheduler up -d # Inclure le scheduler
+#   docker compose down                      # Arrêter tous les services
+#   docker compose logs -f app               # Voir les logs de l'app
+#   docker compose exec app sh               # Shell dans le conteneur app
+#   docker compose exec app php artisan ...  # Lancer artisan
+# =============================================================================
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-healthcheck-postgres: &healthcheck-postgres
+  test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-devops} -d ${DB_DATABASE:-GRMdb}"]
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 30s
+
+x-healthcheck-redis: &healthcheck-redis
+  test: ["CMD", "redis-cli", "ping"]
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 10s
+
+x-app-volumes: &app-volumes
+  volumes:
+    - app-storage:/var/www/html/storage
+    - app-bootstrap:/var/www/html/bootstrap/cache
+
+x-app-deps: &app-deps
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+x-app-deploy: &app-deploy
+  deploy:
+    resources:
+      limits:
+        cpus: "1"
+        memory: 768m
 
 services:
 
-  # ─── Laravel (nginx + php-fpm) ────────────────────────────────────────────
+  # ─── PostgreSQL ─────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: grm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-GRMdb}
+      POSTGRES_USER: ${DB_USERNAME:-devops}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-devops}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck: *healthcheck-postgres
+    logging: *default-logging
+    networks:
+      - grm
+
+  # ─── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: grm-redis
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly yes
+      - --appendfsync everysec
+      - --maxmemory 128mb
+      - --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    healthcheck: *healthcheck-redis
+    logging: *default-logging
+    networks:
+      - grm
+
+  # ─── Application Web (nginx + php-fpm) ──────────────────────────────────────
   app:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - APP_ENV=production
+        - BUILD_DATE=${BUILD_DATE:-}
     container_name: grm-app
     restart: unless-stopped
     ports:
       - "${APP_PORT:-8080}:80"
-    env_file: .env.docker
-    volumes:
-      - app-storage:/var/www/html/storage
-      - app-bootstrap:/var/www/html/bootstrap/cache
+    env_file:
+      - .env.docker
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+    <<: [*app-volumes, *app-deps, *app-deploy]
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost/up"]
-      interval: 30s
+      interval: 15s
       timeout: 5s
       retries: 3
       start_period: 40s
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 768m
-    networks:
-      - grm-net
     logging:
-      driver: json-file
+      <<: *default-logging
       options:
         max-size: "10m"
         max-file: "5"
+    networks:
+      - grm
 
-  # ─── Queue Worker ─────────────────────────────────────────────────────────
+  # ─── Queue Worker ───────────────────────────────────────────────────────────
   worker:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: grm-worker
     restart: unless-stopped
-    command: ["php", "/var/www/html/artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
-    env_file: .env.docker
-    volumes:
-      - app-storage:/var/www/html/storage
-      - app-bootstrap:/var/www/html/bootstrap/cache
+    command:
+      - php
+      - /var/www/html/artisan
+      - queue:work
+      - --sleep=3
+      - --tries=3
+      - --max-time=3600
+    env_file:
+      - .env.docker
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+    <<: [*app-volumes, *app-deps]
     deploy:
       resources:
         limits:
           cpus: "0.5"
           memory: 512m
+    logging: *default-logging
     networks:
-      - grm-net
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - grm
 
-# ─── Volumes ────────────────────────────────────────────────────────────────
+  # ─── Scheduler (opt-in via --profile scheduler) ─────────────────────────────
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: grm-scheduler
+    restart: unless-stopped
+    command:
+      - php
+      - /var/www/html/artisan
+      - schedule:work
+    env_file:
+      - .env.docker
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+    <<: [*app-volumes, *app-deps]
+    profiles:
+      - scheduler
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 256m
+    logging: *default-logging
+    networks:
+      - grm
+
+# ─── Volumes persistants ──────────────────────────────────────────────────────
+# Les volumes nommés survivent à docker compose stop / down / restart.
+# Seul docker compose down -v les supprime (volontaire).
+#
+# Pour sauvegarder / restaurer :
+#   docker run --rm -v grmcopy_postgres-data:/volume -v $(pwd):/backup alpine \
+#     tar czf /backup/postgres-backup.tar.gz -C /volume .
+#   docker run --rm -v grmcopy_postgres-data:/volume -v $(pwd):/backup alpine \
+#     tar xzf /backup/postgres-backup.tar.gz -C /volume
 volumes:
+  postgres-data:
+    driver: local
+    labels:
+      app: grm
+      service: postgres
+      description: "Données persistantes PostgreSQL"
+  redis-data:
+    driver: local
+    labels:
+      app: grm
+      service: redis
+      description: "Données persistantes Redis"
   app-storage:
     driver: local
+    labels:
+      app: grm
+      service: app
+      description: "Fichiers Laravel storage (logs, sessions, uploads)"
   app-bootstrap:
     driver: local
+    labels:
+      app: grm
+      service: app
+      description: "Cache Laravel (config, routes, vues compilées)"
 
-# ─── Network ────────────────────────────────────────────────────────────────
+# ─── Network ──────────────────────────────────────────────────────────────────
 networks:
-  grm-net:
-    external: true
+  grm:
+    driver: bridge
+    name: grm

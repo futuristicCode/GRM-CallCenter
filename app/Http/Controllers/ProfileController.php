@@ -43,7 +43,7 @@ class ProfileController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         if ($request->user()->role !== 'admin') {
-            abort(403, 'Seuls les administrateurs peuvent supprimer des comptes.');
+            abort(403, __('Seuls les administrateurs peuvent supprimer des comptes.'));
         }
 
         $request->validateWithBag('userDeletion', [
