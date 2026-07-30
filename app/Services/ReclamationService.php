@@ -32,16 +32,24 @@ class ReclamationService
     public function creerReclamation(array $donnees, ?int $utilisateurId = null): Reclamation
     {
         return DB::transaction(function () use ($donnees, $utilisateurId) {
-            $client = Client::firstOrCreate(
-                ['email' => $donnees['email']],
-                [
+            $client = $donnees['email']
+                ? Client::firstOrCreate(
+                    ['email' => $donnees['email']],
+                    [
+                        'nom' => $donnees['nom'],
+                        'prenom' => $donnees['prenom'] ?? '',
+                        'telephone' => $donnees['telephone'] ?? null,
+                        'adresse' => $donnees['adresse'] ?? null,
+                        'type' => $donnees['type_client'] ?? 'particulier',
+                    ]
+                )
+                : Client::create([
                     'nom' => $donnees['nom'],
                     'prenom' => $donnees['prenom'] ?? '',
                     'telephone' => $donnees['telephone'] ?? null,
                     'adresse' => $donnees['adresse'] ?? null,
                     'type' => $donnees['type_client'] ?? 'particulier',
-                ]
-            );
+                ]);
 
             $reclamation = Reclamation::create([
                 'reference' => Reclamation::genererReference(),

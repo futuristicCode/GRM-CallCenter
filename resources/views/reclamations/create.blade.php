@@ -22,12 +22,12 @@
                         <input type="text" name="prenom" value="{{ old('prenom') }}" required class="input">
                     </div>
                     <div>
-                        <label class="label">{{ __('Email') }} <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" value="{{ old('email') }}" required class="input">
+                        <label class="label">{{ __('Email') }}</label>
+                        <input type="email" name="email" value="{{ old('email') }}" class="input">
                     </div>
                     <div>
-                        <label class="label">{{ __('Téléphone') }}</label>
-                        <input type="text" name="telephone" value="{{ old('telephone') }}" class="input">
+                        <label class="label">{{ __('Téléphone') }} <span class="text-red-500">*</span></label>
+                        <input type="text" name="telephone" value="{{ old('telephone') }}" required class="input">
                     </div>
                     <div class="md:col-span-2">
                         <label class="label">{{ __('Adresse') }}</label>
@@ -61,14 +61,14 @@
                         </select>
                     </div>
                     <div>
-                        <label class="label">{{ __('Sous-type') }}</label>
-                        <select name="sous_type_id" id="sous_type_id" class="select">
+                        <label class="label">{{ __('Sous-type') }} <span class="text-red-500">*</span></label>
+                        <select name="sous_type_id" id="sous_type_id" required class="select">
                             <option value="">{{ __('Sélectionner un sous-type') }}</option>
                         </select>
                     </div>
                     <div>
-                        <label class="label">{{ __('Référence externe') }}</label>
-                        <input type="text" name="reference_externe" value="{{ old('reference_externe') }}" placeholder="{{ __('N° billet, code colis...') }}" class="input">
+                        <label class="label">{{ __('Référence externe') }} <span class="text-red-500">*</span></label>
+                        <input type="text" name="reference_externe" value="{{ old('reference_externe') }}" placeholder="{{ __('N° billet, code colis...') }}" required class="input">
                     </div>
                     <div>
                         <label class="label">{{ __('Priorité') }} <span class="text-red-500">*</span></label>

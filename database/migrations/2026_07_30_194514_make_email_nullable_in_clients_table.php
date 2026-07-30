@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('locale', 5)->default('fr')->after('is_active');
+        Schema::table('clients', function (Blueprint $table) {
+            $table->string('email')->nullable()->change();
         });
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('locale');
+        Schema::table('clients', function (Blueprint $table) {
+            $table->string('email')->nullable(false)->change();
         });
     }
 };

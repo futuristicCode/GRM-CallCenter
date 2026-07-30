@@ -33,12 +33,12 @@
                         <input type="text" name="prenom" value="{{ old('prenom', $reclamation->client->prenom) }}" required class="input">
                     </div>
                     <div>
-                        <label class="label">{{ __('Email') }} <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" value="{{ old('email', $reclamation->client->email) }}" required class="input">
+                        <label class="label">{{ __('Email') }}</label>
+                        <input type="email" name="email" value="{{ old('email', $reclamation->client->email) }}" class="input">
                     </div>
                     <div>
-                        <label class="label">{{ __('Téléphone') }}</label>
-                        <input type="text" name="telephone" value="{{ old('telephone', $reclamation->client->telephone) }}" class="input">
+                        <label class="label">{{ __('Téléphone') }} <span class="text-red-500">*</span></label>
+                        <input type="text" name="telephone" value="{{ old('telephone', $reclamation->client->telephone) }}" required class="input">
                     </div>
                     <div class="md:col-span-2">
                         <label class="label">{{ __('Adresse') }}</label>
@@ -64,17 +64,17 @@
                         </select>
                     </div>
                     <div>
-                        <label class="label">{{ __('Sous-type') }}</label>
-                        <select name="sous_type_id" id="sous_type_id" class="select">
-                            <option value="">{{ __('Aucun') }}</option>
+                        <label class="label">{{ __('Sous-type') }} <span class="text-red-500">*</span></label>
+                        <select name="sous_type_id" id="sous_type_id" required class="select">
+                            <option value="">{{ __('Sélectionner un sous-type') }}</option>
                             @foreach($sousTypes as $st)
                                 <option value="{{ $st->id }}" {{ old('sous_type_id', $reclamation->sous_type_id) == $st->id ? 'selected' : '' }}>{{ $st->libelle }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div>
-                        <label class="label">{{ __('Référence externe') }}</label>
-                        <input type="text" name="reference_externe" value="{{ old('reference_externe', $reclamation->reference_externe) }}" class="input">
+                        <label class="label">{{ __('Référence externe') }} <span class="text-red-500">*</span></label>
+                        <input type="text" name="reference_externe" value="{{ old('reference_externe', $reclamation->reference_externe) }}" required class="input">
                     </div>
                     <div>
                         <label class="label">{{ __('Priorité') }} <span class="text-red-500">*</span></label>

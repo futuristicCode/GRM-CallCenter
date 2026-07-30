@@ -79,6 +79,7 @@
                     </a>
                 @endif
 
+                @if(in_array(auth()->user()->role, ['admin', 'gestionnaire']))
                 <div class="pt-4 pb-2" x-show="sidebarOpen">
                     <p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Rapports') }}</p>
                 </div>
@@ -98,6 +99,7 @@
                     </svg>
                     <span x-show="sidebarOpen" x-transition>{{ __('Export CSV') }}</span>
                 </a>
+                @endif
 
                 <div class="pt-4 pb-2" x-show="sidebarOpen">
                     <p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Notifications') }}</p>
@@ -190,6 +192,7 @@
                         {{ __('Journal d\'audit') }}
                     </a>
                 @endif
+                @if(in_array(auth()->user()->role, ['admin', 'gestionnaire']))
                 <div class="pt-4 pb-2"><p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Rapports') }}</p></div>
                 <a href="{{ route('reports.index') }}" class="sidebar-link {{ request()->routeIs('reports.index') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
@@ -199,6 +202,7 @@
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                     {{ __('Export CSV') }}
                 </a>
+                @endif
                 <div class="pt-4 pb-2"><p class="px-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">{{ __('Autres') }}</p></div>
                 <a href="{{ route('notifications.index') }}" class="sidebar-link {{ request()->routeIs('notifications.*') ? 'sidebar-link-active' : 'sidebar-link-default' }}">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>

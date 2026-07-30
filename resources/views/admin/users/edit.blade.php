@@ -69,7 +69,6 @@
                         <label for="is_active" class="inline-flex items-center gap-3 cursor-pointer">
                             <input type="hidden" name="is_active" value="0">
                             <div class="relative">
-                                <input type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_activeclass="relative">
                                 <input type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }}
                                        class="sr-only peer">
                                 <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-emerald-500 transition-colors"></div>

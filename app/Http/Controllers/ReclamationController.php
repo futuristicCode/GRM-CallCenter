@@ -80,16 +80,16 @@ class ReclamationController extends Controller
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'telephone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'telephone' => 'required|string|max:50',
             'adresse' => 'nullable|string|max:500',
             'type_client' => 'nullable|string|in:particulier,entreprise',
             'type_id' => 'required|exists:types_reclamation,id',
-            'sous_type_id' => 'nullable|exists:sous_types,id',
+            'sous_type_id' => 'required|exists:sous_types,id',
             'sujet' => 'required|string|max:255',
             'description' => 'required|string',
             'priorite' => 'required|string|in:haute,moyenne,basse',
-            'reference_externe' => 'nullable|string|max:100',
+            'reference_externe' => 'required|string|max:100',
             'pieces.*' => 'nullable|file|max:10240|mimes:pdf,jpg,jpeg,png',
         ]);
 
@@ -147,15 +147,15 @@ class ReclamationController extends Controller
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'telephone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'telephone' => 'required|string|max:50',
             'adresse' => 'nullable|string|max:500',
             'type_id' => 'required|exists:types_reclamation,id',
-            'sous_type_id' => 'nullable|exists:sous_types,id',
+            'sous_type_id' => 'required|exists:sous_types,id',
             'sujet' => 'required|string|max:255',
             'description' => 'required|string',
             'priorite' => 'required|string|in:haute,moyenne,basse',
-            'reference_externe' => 'nullable|string|max:100',
+            'reference_externe' => 'required|string|max:100',
         ]);
 
         $reclamation->update([

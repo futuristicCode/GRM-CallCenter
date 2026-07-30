@@ -10,6 +10,16 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!in_array(auth()->user()->role, ['admin', 'gestionnaire'])) {
+                abort(403, __('Accès réservé aux administrateurs et gestionnaires.'));
+            }
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $types = TypeReclamation::where('actif', true)->get();
